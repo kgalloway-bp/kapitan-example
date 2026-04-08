@@ -1,0 +1,17 @@
+# Layer 3: Backend component config.
+# Adds env vars on top of the base empty list — reclass merges lists by appending.
+parameters:
+  component: backend
+
+  deployment:
+    image: python:3.11-slim
+    port: 8080
+    env:
+      - name: LOG_LEVEL
+        value: info
+      - name: APP_PORT
+        value: "8080"
+
+  service:
+    port: 8080
+    target_port: 8080

@@ -1,0 +1,23 @@
+# Layer 1: Base defaults — inherited by every target via env classes.
+# These are the lowest-precedence values; any env or component class can override.
+parameters:
+  namespace: default
+
+  labels:
+    managed-by: kapitan
+
+  deployment:
+    replicas: 1
+    image_pull_policy: IfNotPresent
+    env: []
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "128Mi"
+      limits:
+        cpu: "500m"
+        memory: "256Mi"
+
+  service:
+    type: ClusterIP
+    protocol: TCP

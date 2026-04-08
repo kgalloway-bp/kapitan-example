@@ -1,0 +1,12 @@
+# Layer 3: Frontend component config.
+# Sets the image, container port, and service port. No env vars needed for nginx.
+parameters:
+  component: frontend
+
+  deployment:
+    image: nginx:1.25-alpine
+    port: 80
+
+  service:
+    port: 80
+    target_port: 80

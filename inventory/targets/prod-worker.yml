@@ -1,0 +1,18 @@
+# Target: prod-worker
+# Merges: base.common → env.prod → component.worker
+# Note: component.worker explicitly resets service.type to ClusterIP,
+# demonstrating how a component class can "un-override" an env-level setting.
+classes:
+  - env.prod
+  - component.worker
+
+parameters:
+  kapitan:
+    vars:
+      target: prod-worker
+    compile:
+      - input_paths:
+          - templates/manifests.yml
+        input_type: jinja2
+        output_path: .
+        output_type: yaml

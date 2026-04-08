@@ -1,0 +1,17 @@
+# Target: prod-frontend
+# Merges: base.common → env.prod → component.frontend
+# env.prod bumps replicas to 3, image_pull_policy to Always, and service.type to LoadBalancer
+classes:
+  - env.prod
+  - component.frontend
+
+parameters:
+  kapitan:
+    vars:
+      target: prod-frontend
+    compile:
+      - input_paths:
+          - templates/manifests.yml
+        input_type: jinja2
+        output_path: .
+        output_type: yaml

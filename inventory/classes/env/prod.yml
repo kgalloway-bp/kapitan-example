@@ -1,0 +1,26 @@
+# Layer 2: Prod environment overrides.
+# Higher replicas, larger resource envelopes, and prod-specific labels.
+classes:
+  - base.common
+
+parameters:
+  namespace: prod
+
+  labels:
+    environment: prod
+    tier: production
+
+  deployment:
+    replicas: 3
+    image_pull_policy: Always
+    resources:
+      requests:
+        cpu: "200m"
+        memory: "256Mi"
+      limits:
+        cpu: "1000m"
+        memory: "512Mi"
+
+  service:
+    # Prod services are exposed via LoadBalancer
+    type: LoadBalancer

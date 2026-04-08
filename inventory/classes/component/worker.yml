@@ -1,0 +1,24 @@
+# Layer 3: Worker component config.
+# Headless service (ClusterIP: None) — workers don't need load balancing.
+# Also overrides service.type back to ClusterIP even in prod (prod sets LoadBalancer globally,
+# but component-level config takes higher precedence in reclass merge order).
+parameters:
+  component: worker
+
+  deployment:
+    image: python:3.11-slim
+    port: 9090
+    env:
+      - name: LOG_LEVEL
+        value: debug
+      - name: WORKER_CONCURRENCY
+        value: "4"
+      - name: QUEUE_URL
+        value: "redis://redis:6379/0"
+
+  service:
+    # Workers use a headless service — direct pod DNS, no proxy
+    type: ClusterIP
+    cluster_ip: None
+    port: 9090
+    target_port: 9090

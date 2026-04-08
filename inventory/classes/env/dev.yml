@@ -1,0 +1,21 @@
+# Layer 2: Dev environment overrides.
+# Pulls in base.common, then narrows resources and sets namespace/labels.
+classes:
+  - base.common
+
+parameters:
+  namespace: dev
+
+  labels:
+    environment: dev
+    tier: non-prod
+
+  deployment:
+    replicas: 1
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "64Mi"
+      limits:
+        cpu: "200m"
+        memory: "128Mi"

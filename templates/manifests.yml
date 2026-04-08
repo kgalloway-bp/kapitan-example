@@ -1,0 +1,72 @@
+{%- set p    = inventory.parameters -%}
+{%- set name = p.component -%}
+{%- set ns   = p.namespace -%}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ name }}
+  namespace: {{ ns }}
+  labels:
+    app: {{ name }}
+    managed-by: {{ p.labels['managed-by'] }}
+    environment: {{ p.labels['environment'] }}
+    tier: {{ p.labels['tier'] }}
+spec:
+  replicas: {{ p.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: {{ name }}
+  template:
+    metadata:
+      labels:
+        app: {{ name }}
+        managed-by: {{ p.labels['managed-by'] }}
+        environment: {{ p.labels['environment'] }}
+        tier: {{ p.labels['tier'] }}
+    spec:
+      containers:
+        - name: {{ name }}
+          image: {{ p.deployment.image }}
+          imagePullPolicy: {{ p.deployment.image_pull_policy }}
+          ports:
+            - name: http
+              containerPort: {{ p.deployment.port }}
+              protocol: TCP
+          resources:
+            requests:
+              cpu: "{{ p.deployment.resources.requests.cpu }}"
+              memory: "{{ p.deployment.resources.requests.memory }}"
+            limits:
+              cpu: "{{ p.deployment.resources.limits.cpu }}"
+              memory: "{{ p.deployment.resources.limits.memory }}"
+{% if p.deployment.env | length > 0 %}
+          env:
+{% for env_var in p.deployment.env %}
+            - name: {{ env_var.name }}
+              value: "{{ env_var.value }}"
+{% endfor %}
+{% endif %}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ name }}
+  namespace: {{ ns }}
+  labels:
+    app: {{ name }}
+    managed-by: {{ p.labels['managed-by'] }}
+    environment: {{ p.labels['environment'] }}
+    tier: {{ p.labels['tier'] }}
+spec:
+  type: {{ p.service.type }}
+{% if p.service.cluster_ip is defined %}
+  clusterIP: {{ p.service.cluster_ip }}
+{% endif %}
+  selector:
+    app: {{ name }}
+  ports:
+    - name: http
+      protocol: {{ p.service.protocol }}
+      port: {{ p.service.port }}
+      targetPort: {{ p.service.target_port }}
